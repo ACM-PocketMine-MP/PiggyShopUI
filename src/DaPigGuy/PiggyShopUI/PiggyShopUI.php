@@ -10,9 +10,9 @@ use DaPigGuy\libPiggyUpdateChecker\libPiggyUpdateChecker;
 use DaPigGuy\PiggyShopUI\commands\ShopCommand;
 use DaPigGuy\PiggyShopUI\shops\ShopCategory;
 use DaPigGuy\PiggyShopUI\utils\Utils;
-use jojoe77777\FormAPI\Form;
+use Vecnavium\FormsUI\Form;
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
+use pocketmine\item\VanillaItems;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 
@@ -33,7 +33,7 @@ class PiggyShopUI extends PluginBase
         foreach (
             [
                 "Commando" => BaseCommand::class,
-                "libformapi" => Form::class,
+                "FormsUI" => Form::class,
                 "libPiggyEconomy" => libPiggyEconomy::class,
                 "libPiggyUpdateChecker" => libPiggyUpdateChecker::class
             ] as $virion => $class
@@ -120,11 +120,10 @@ class PiggyShopUI extends PluginBase
         $this->saveToShopConfig();
     }
 
-    public function getNameByDamage(Item $item): string
-    {
-        if ($item->getId() === ItemIds::BANNER) {
-            $colors = ["Black", "Red", "Green", "Brown", "Blue", "Purple", "Cyan", "Light Gray", "Gray", "Pink", "Lime", "Yellow", "Light Blue", "Magenta", "Orange", "White", "Black", "Brown", "Blue", "White"];
-            return $colors[$item->getMeta()] . " Banner";
+    public function getNameByDamage(Item $item): string{
+        $banner = VanillaItems::BANNER();
+        if($item->getTypeId() === $banner->getTypeId()){
+            return $banner->getColor()->getDisplayName(). " Banner";
         }
         return $item->getName();
     }

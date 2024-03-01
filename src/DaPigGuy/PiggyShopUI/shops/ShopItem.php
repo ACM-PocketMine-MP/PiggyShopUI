@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DaPigGuy\PiggyShopUI\shops;
 
 use DaPigGuy\PiggyShopUI\PiggyShopUI;
+use DaPigGuy\PiggyShopUI\utils\Utils;
 use pocketmine\item\Item;
 
 class ShopItem
@@ -95,8 +96,15 @@ class ShopItem
         PiggyShopUI::getInstance()->saveToShopConfig();
     }
 
-    public function serialize(): array
-    {
-        return ["item" => $this->item->jsonSerialize(), "description" => $this->description, "canBuy" => $this->canBuy, "buyPrice" => $this->buyPrice, "canSell" => $this->canSell, "sellPrice" => $this->sellPrice, "imageType" => $this->imageType, "imagePath" => $this->imagePath];
+    public function serialize(): array{
+        return [
+            "item" => Utils::jsonSerialize($this->item),
+            "description" => $this->description, 
+            "canBuy" => $this->canBuy, 
+            "buyPrice" => $this->buyPrice, 
+            "canSell" => $this->canSell, 
+            "sellPrice" => $this->sellPrice, 
+            "imageType" => $this->imageType, 
+            "imagePath" => $this->imagePath];
     }
 }

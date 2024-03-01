@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace DaPigGuy\PiggyShopUI\shops;
 
 use DaPigGuy\PiggyShopUI\PiggyShopUI;
+use DaPigGuy\PiggyShopUI\utils\Utils;
 use pocketmine\item\Item;
+use pocketmine\item\VanillaItems;
 use pocketmine\permission\Permission;
 use pocketmine\permission\PermissionManager;
 
@@ -119,12 +121,31 @@ class ShopCategory
         }, $this->subcategories), "private" => $this->private, "imageType" => $this->imageType, "imagePath" => $this->imagePath];
     }
 
-    public static function deserialize(array $category): static
-    {
+    /**
+     * by fernanACM
+     * @param array $category
+     * @return static
+     */
+    public static function deserialize(array $category): static{
         return new static($category["name"], array_map(function (array $item): ShopItem {
-            return new ShopItem(Item::jsonDeserialize($item["item"]), $item["description"], $item["canBuy"] ?? true, $item["buyPrice"], $item["canSell"], $item["sellPrice"], $item["imageType"] ?? -1, $item["imagePath"] ?? "");
+            $itemLegacy = VanillaItems::AIR();
+            if(isset($item["item"]) && is_int($item["item"]["id"])) {
+                $itemLegacy = Item::legacyJsonDeserialize($item["item"]);
+            }else{
+                $itemLegacy = Utils::legacyStringJsonDeserialize($item["item"]);
+            }
+            return new ShopItem(
+                $itemLegacy,
+                $item["description"],
+                $item["canBuy"] ?? true,
+                $item["buyPrice"],
+                $item["canSell"],
+                $item["sellPrice"],
+                $item["imageType"] ?? -1,
+                $item["imagePath"] ?? ""
+            );
         }, $category["items"]), array_map(function (array $subcategory): ShopSubcategory {
             return ShopSubcategory::deserialize($subcategory);
         }, $category["subcategories"] ?? []), $category["private"], $category["imageType"] ?? -1, $category["imagePath"] ?? "");
-    }
+    }    
 }

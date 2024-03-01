@@ -9,17 +9,14 @@ use DaPigGuy\PiggyShopUI\PiggyShopUI;
 use DaPigGuy\PiggyShopUI\shops\ShopCategory;
 use DaPigGuy\PiggyShopUI\shops\ShopItem;
 use DaPigGuy\PiggyShopUI\shops\ShopSubcategory;
-use jojoe77777\FormAPI\CustomForm;
-use jojoe77777\FormAPI\SimpleForm;
+use Vecnavium\FormsUI\SimpleForm;
+use Vecnavium\FormsUI\CustomForm;
 use pocketmine\command\CommandSender;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
-class EditSubCommand extends BaseSubCommand
-{
-    /** @var PiggyShopUI */
-    protected $plugin;
+class EditSubCommand extends BaseSubCommand{
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
     {
@@ -58,7 +55,7 @@ class EditSubCommand extends BaseSubCommand
     {
         $form = new CustomForm(function (Player $player, ?array $data): void {
             if ($data !== null) {
-                if ($this->plugin->getShopCategory($data[0]) !== null) {
+                if (PiggyShopUI::getInstance()->getShopCategory($data[0]) !== null) {
                     $player->sendMessage(TextFormat::RED . "A shop category already exists with the name " . $data[0] . ".");
                     return;
                 }
@@ -66,7 +63,7 @@ class EditSubCommand extends BaseSubCommand
                     $player->sendMessage(TextFormat::RED . "'" . $data[0] . "' is an invalid shop category name.");
                     return;
                 }
-                $this->plugin->addShopCategory(new ShopCategory($data[0], [], [], $data[1], $data[2] - 1, $data[3]));
+                PiggyShopUI::getInstance()->addShopCategory(new ShopCategory($data[0], [], [], $data[1], $data[2] - 1, $data[3]));
                 $player->sendMessage(TextFormat::GREEN . "Shop category " . $data[0] . " created successfully.");
             }
             $this->showMainPage($player);
@@ -81,7 +78,7 @@ class EditSubCommand extends BaseSubCommand
 
     public function showEditCategoriesPage(Player $player): void
     {
-        $categories = $this->plugin->getShopCategories();
+        $categories = PiggyShopUI::getInstance()->getShopCategories();
         $form = new SimpleForm(function (Player $player, ?int $data) use ($categories): void {
             if ($data !== null) {
                 if ($data === count($categories)) {
@@ -262,7 +259,7 @@ class EditSubCommand extends BaseSubCommand
     {
         $form = new CustomForm(function (Player $player, ?array $data) use ($category): void {
             if ($data !== null) {
-                if ($this->plugin->getShopCategory($data[0]) !== null) {
+                if (PiggyShopUI::getInstance()->getShopCategory($data[0]) !== null) {
                     $player->sendMessage(TextFormat::RED . "A subcategory already exists with the name " . $data[0] . ".");
                     return;
                 }
@@ -329,7 +326,7 @@ class EditSubCommand extends BaseSubCommand
         $form = new CustomForm(function (Player $player, ?array $data) use ($category): void {
             if ($data !== null) {
                 if ($category->getName() !== $data[0]) {
-                    if ($this->plugin->getShopCategory($data[0]) !== null) {
+                    if (PiggyShopUI::getInstance()->getShopCategory($data[0]) !== null) {
                         $player->sendMessage(TextFormat::RED . "Could not rename. A shop category already exists with the name.");
                     } else {
                         $category->setName($data[0]);
@@ -358,11 +355,11 @@ class EditSubCommand extends BaseSubCommand
 
     public function showRemoveCategoryPage(Player $player): void
     {
-        $categories = array_values($this->plugin->getShopCategories());
+        $categories = array_values(PiggyShopUI::getInstance()->getShopCategories());
         $form = new CustomForm(function (Player $player, ?array $data) use ($categories): void {
             if ($data !== null) {
                 $category = $categories[$data[0]];
-                $this->plugin->removeShopCategory($category);
+                PiggyShopUI::getInstance()->removeShopCategory($category);
                 $player->sendMessage(TextFormat::GREEN . "Shop category " . $category->getName() . " removed successfully.");
             }
             $this->showMainPage($player);
@@ -375,8 +372,7 @@ class EditSubCommand extends BaseSubCommand
 
     }
 
-    protected function prepare(): void
-    {
+    protected function prepare(): void{
         $this->setPermission("piggyshopui.command.shop.edit");
     }
 }
