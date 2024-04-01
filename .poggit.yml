@@ -11,7 +11,7 @@ projects:
         version: ^3.2.1
         branch: PM5
       - src: DaPigGuy/libPiggyEconomy/libPiggyEconomy
-        version: ^3.0.2
+        version: ^3.0.3
       - src: ACM-PocketMine-MP/libPiggyUpdateChecker/libPiggyUpdateChecker
         version: ^2.0.0
     lint:
